@@ -1,7 +1,7 @@
 <?php
 
 $finder = (new PhpCsFixer\Finder())
-    ->in([__DIR__ . '/app'])
+    ->in([__DIR__ . '/src'])
     ->exclude(['tests/fixtures']);
 
 return (new PhpCsFixer\Config())
