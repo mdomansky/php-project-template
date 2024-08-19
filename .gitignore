@@ -1,0 +1,15 @@
+/.phpunit.cache
+/public/sitemap*.xml
+/public/sitemap/*.xml
+
+/storage/*.key
+/storage/logs
+/vendor
+.env
+.phpunit.result.cache
+/.fleet
+/.idea
+/.vscode
+
+.php-cs-fixer.cache
+var/*

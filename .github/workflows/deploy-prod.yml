@@ -1,0 +1,62 @@
+name: Prod deploy
+run-name: Prod deploy
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      SSH_PRIVATE_KEY:
+        required: true
+
+env:
+  PATH: "/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin"
+  GIT_STRATEGY: none
+  APP_ENV: prod
+  TARGET_HOST: ${{ vars.HOST }}
+  TARGET_PORT: 22
+  TARGET_USER: deployer
+  TARGET_DIR: /var/www/${{ vars.PROJECT }}/
+
+jobs:
+
+  deploy-dev:
+    name: Deploy service (prod)
+    if: github.ref_name == 'main'
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: check out repository code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.2 version
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.2
+
+      - name: prepare prod env (in dest host)
+        run: cp .env.prod .env
+          && echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+
+      - name: composer install
+        run: composer install --no-dev --optimize-autoloader
+
+      - name: rsync deployments
+        uses: burnett01/rsync-deployments@6.0.0
+        with:
+          switches: -avq --delete"
+          path: ./
+          remote_path: ${{ env.TARGET_DIR }}
+          remote_host: ${{ env.TARGET_HOST }}
+          remote_port: ${{ env.TARGET_PORT }}
+          remote_user: ${{ env.TARGET_USER }}
+          remote_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+# Run any linux command on your machine
+#      - name: migrate
+#        uses: appleboy/ssh-action@master
+#        with:
+#          host: ${{ env.TARGET_HOST }}
+#          username: ${{ env.TARGET_USER }}
+#          key: ${{ secrets.SSH_PRIVATE_KEY }}
+#          script: cd ${{ env.TARGET_DIR }} && php artisan migrate

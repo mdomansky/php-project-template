@@ -1,0 +1,7 @@
+parameters:
+    level: 8
+    editorUrl: 'phpstorm://open?file=%%file%%&line=%%line%%'
+    treatPhpDocTypesAsCertain: false
+    paths:
+        - src
+    ignoreErrors:

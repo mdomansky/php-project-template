@@ -1,0 +1,29 @@
+{
+    "name": "mdomansky/php-project-template",
+    "description": "PHP project template (start new development with this scaffold project)",
+    "type": "project",
+    "require-dev": {
+        "vimeo/psalm": "^5",
+        "phpstan/phpstan": "^1",
+        "friendsofphp/php-cs-fixer": "^3"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mdomansky",
+            "email": "mx.mixer@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">8.1"
+    },
+    "config": {
+        "platform": {
+            "php": "8.2.22"
+        }
+    }
+}

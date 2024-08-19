@@ -1,0 +1,67 @@
+version: '3.9'
+
+services:
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "8080:80"
+    volumes:
+      - ./.docker/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./.docker/logs/nginx:/var/log/nginx
+      - ./:/var/www/html
+    depends_on:
+      - app
+    networks:
+      - default
+
+  app:
+    container_name: app
+    build:
+      target: app
+      dockerfile: .docker/.Dockerfile
+    working_dir: /var/www/html
+    volumes:
+      - ./:/var/www/html
+      - ./.docker/php.ini:/usr/local/etc/php/php.ini
+    depends_on:
+      - db
+      - redis
+    networks:
+      - default
+
+  db:
+    container_name: db
+    image: mariadb:latest
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_DATABASE: ${DB_DATABASE}
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - default
+
+  redis:
+    image: 'redis:latest'
+    restart: always
+    ports:
+      - '6379:6379'
+    container_name: redis
+    volumes:
+      - redis_data:/data
+    networks:
+      - default
+
+volumes:
+  mysql_data:
+  redis_data:
+
+networks:
+  default:
+    name: ${APP_NAME}
+    driver: bridge
