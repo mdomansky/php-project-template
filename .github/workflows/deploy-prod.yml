@@ -44,7 +44,7 @@ jobs:
       - name: rsync deployments
         uses: burnett01/rsync-deployments@6.0.0
         with:
-          switches: -avq --delete"
+          switches: -avq --delete
           path: ./
           remote_path: ${{ env.TARGET_DIR }}
           remote_host: ${{ env.TARGET_HOST }}
